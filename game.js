@@ -1,3 +1,6 @@
+const tg = window.Telegram.WebApp;
+tg.expand(); // делает WebApp во весь экран
+
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
 let upgradeCosts = JSON.parse(localStorage.getItem('upgradeCosts')) || {};
