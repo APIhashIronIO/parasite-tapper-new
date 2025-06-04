@@ -2,47 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tap Parasite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parasite Tapper</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <div class="header-content">
-      <img src="assets/virus.png" class="virus-icon" />
+      <img src="assets/virus.png" class="virus-icon" alt="Virus icon" />
       <span id="virus-count">0</span> viruses
     </div>
   </header>
 
   <main>
-    <div class="virus-area" id="virus-area">
-      <img src="assets/virus.png" class="tap-virus" />
+    <section class="virus-area">
+      <img src="assets/virus.png" class="tap-virus" alt="Virus" />
       <button id="infect-button">INFECT</button>
-    </div>
+    </section>
 
     <section class="mutations">
       <h2>Mutations</h2>
-      <div class="mutation" data-cost="100" data-id="speed">
-        <img src="assets/speed.png" />
+
+      <!-- 🧬 SPEED -->
+      <div class="mutation" data-id="speed">
+        <img src="assets/speed.png" alt="Speed upgrade" />
         <div>
-          <strong>Rapid Replication</strong>
+          <strong>Rapid Replication <span class="level" data-id="speed">x0</span></strong>
           <p>COST: 100</p>
         </div>
       </div>
-      <div class="mutation" data-cost="500" data-id="shield">
-        <img src="assets/shield.png" />
+
+      <!-- 🛡 SHIELD -->
+      <div class="mutation" data-id="shield">
+        <img src="assets/shield.png" alt="Shield upgrade" />
         <div>
-          <strong>Drug Resistance</strong>
+          <strong>Drug Resistance <span class="level" data-id="shield">x0</span></strong>
           <p>COST: 500</p>
         </div>
       </div>
-      <div class="mutation" data-cost="1500" data-id="stealth">
-        <img src="assets/stealth.png" />
+
+      <!-- 🕵️ STEALTH -->
+      <div class="mutation" data-id="stealth">
+        <img src="assets/stealth.png" alt="Stealth upgrade" />
         <div>
-          <strong>Invisibility</strong>
+          <strong>Invisibility <span class="level" data-id="stealth">x0</span></strong>
           <p>COST: 1500</p>
         </div>
       </div>
+
+      <!-- ⚙️ AUTO CLICKER -->
+      <div class="mutation" data-id="autoclick">
+        <img src="assets/virus.png" alt="Auto Clicker" />
+        <div>
+          <strong>Auto Clicker <span class="level" data-id="autoclick">x0</span></strong>
+          <p>COST: 200</p>
+        </div>
+      </div>
+
     </section>
   </main>
 
