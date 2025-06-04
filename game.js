@@ -6,7 +6,7 @@ const counter = document.getElementById('virus-count');
 const infectButton = document.getElementById('infect-button');
 const mutations = document.querySelectorAll('.mutation');
 
-// Базовые цены по умолчанию (если upgradeCosts нет)
+// Базовые цены
 const basePrices = {
   speed: 100,
   shield: 500,
@@ -14,13 +14,14 @@ const basePrices = {
   autoclick: 200,
 };
 
-// Обновление UI и сохранение
+// Обновление интерфейса
 function updateUI() {
   counter.textContent = virusCount;
   localStorage.setItem('virusCount', virusCount);
   localStorage.setItem('upgrades', JSON.stringify(upgrades));
   localStorage.setItem('upgradeCosts', JSON.stringify(upgradeCosts));
   updateLevelsUI();
+  updateAchievementProgress();
 
   mutations.forEach(mutation => {
     const id = mutation.dataset.id;
@@ -38,7 +39,7 @@ function updateUI() {
   });
 }
 
-// Показ уровней (x3, x7...)
+// Обновление уровней (x3 и т.д.)
 function updateLevelsUI() {
   const levelElements = document.querySelectorAll('.level');
   levelElements.forEach(el => {
@@ -47,7 +48,7 @@ function updateLevelsUI() {
   });
 }
 
-// Кнопка INFECT
+// INFECT
 infectButton.addEventListener('click', () => {
   const bonus = upgrades.speed || 0;
   virusCount += 1 + bonus;
@@ -84,7 +85,6 @@ mutations.forEach(mutation => {
       return;
     }
 
-    // если цены ещё нет — установи базовую
     if (!cost) {
       cost = basePrices[id];
       upgradeCosts[id] = cost;
@@ -93,11 +93,9 @@ mutations.forEach(mutation => {
     if (virusCount >= cost) {
       virusCount -= cost;
       upgrades[id] = level + 1;
-
-      // увеличиваем цену только этого улучшения
       upgradeCosts[id] = Math.floor(cost * 1.2);
-
       updateUI();
+
       showToast(`${mutation.querySelector('strong').childNodes[0].textContent.trim()} upgraded to x${level + 1}!`, 'success');
     } else {
       showToast('Not enough viruses!', 'error');
@@ -105,7 +103,7 @@ mutations.forEach(mutation => {
   });
 });
 
-// Автокликер — +N вирусов/сек
+// 🧠 Автокликер
 setInterval(() => {
   const auto = upgrades.autoclick || 0;
   if (auto > 0) {
@@ -114,7 +112,35 @@ setInterval(() => {
   }
 }, 1000);
 
-// Всплывающее сообщение
+// 🎖 Achievements
+
+// Кнопка открытия
+document.getElementById('achievements-button').addEventListener('click', () => {
+  document.getElementById('achievements-panel').classList.toggle('hidden');
+});
+
+function closeAchievements() {
+  document.getElementById('achievements-panel').classList.add('hidden');
+}
+
+// Разблокировка
+function unlockAchievement(id, message) {
+  const el = document.getElementById(id);
+  if (el && el.classList.contains('locked')) {
+    el.classList.remove('locked');
+    el.classList.add('unlocked');
+    showToast(`🏆 Achievement Unlocked: ${message}`, 'success');
+  }
+}
+
+// Проверка условий
+function updateAchievementProgress() {
+  if ((upgrades.autoclick || 0) >= 10) {
+    unlockAchievement('ach-auto-click', 'Auto Clicker x10!');
+  }
+}
+
+// 🔔 Toast
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;

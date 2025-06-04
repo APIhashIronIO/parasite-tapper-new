@@ -23,7 +23,6 @@
     <section class="mutations">
       <h2>Mutations</h2>
 
-      <!-- 🧬 SPEED -->
       <div class="mutation" data-id="speed">
         <img src="assets/speed.png" alt="Speed upgrade" />
         <div>
@@ -32,7 +31,6 @@
         </div>
       </div>
 
-      <!-- 🛡 SHIELD -->
       <div class="mutation" data-id="shield">
         <img src="assets/shield.png" alt="Shield upgrade" />
         <div>
@@ -41,7 +39,6 @@
         </div>
       </div>
 
-      <!-- 🕵️ STEALTH -->
       <div class="mutation" data-id="stealth">
         <img src="assets/stealth.png" alt="Stealth upgrade" />
         <div>
@@ -50,7 +47,6 @@
         </div>
       </div>
 
-      <!-- ⚙️ AUTO CLICKER -->
       <div class="mutation" data-id="autoclick">
         <img src="assets/virus.png" alt="Auto Clicker" />
         <div>
@@ -58,8 +54,24 @@
           <p>COST: 200</p>
         </div>
       </div>
-
     </section>
+
+    <!-- 🏆 Achievements button (bottom right) -->
+    <button id="achievements-button">
+      <img src="assets/achievement.png" alt="Achievements" style="width: 22px;" />
+    </button>
+
+    <!-- 🏆 Achievements panel -->
+    <div id="achievements-panel" class="hidden">
+      <div class="achievements-header">
+        <img src="assets/achievement.png" alt="Trophy Icon" />
+        <span>Achievements</span>
+      </div>
+      <ul id="achievement-list">
+        <li id="ach-auto-click" class="locked">🔒 Auto Clicker x10</li>
+      </ul>
+      <button onclick="closeAchievements()">Close</button>
+    </div>
   </main>
 
   <script src="game.js"></script>

@@ -191,3 +191,58 @@ main {
   pointer-events: none;
   cursor: not-allowed;
 }
+
+#achievements-button {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  background: #00c6ff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  box-shadow: 0 0 10px #00c6ff80;
+  cursor: pointer;
+}
+
+#achievements-panel {
+  position: fixed;
+  bottom: 70px;
+  right: 12px;
+  width: 250px;
+  background: #0e1e30;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  padding: 16px;
+  z-index: 101;
+  color: white;
+}
+
+#achievements-panel.hidden {
+  display: none;
+}
+
+.achievements-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.achievements-header img {
+  width: 28px;
+}
+
+#achievement-list li.locked {
+  opacity: 0.5;
+}
+
+#achievement-list li.unlocked {
+  opacity: 1;
+  color: gold;
+  font-weight: bold;
+}
