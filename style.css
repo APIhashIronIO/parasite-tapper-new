@@ -395,5 +395,28 @@ header {
   }
 }
 
+.spawned-virus {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 10;
+  animation: virusFly 1s ease-out forwards;
+}
+
+@keyframes virusFly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50px + 100px * var(--x)), calc(-100px + 100px * var(--y))) scale(0.6);
+    opacity: 0;
+  }
+}
+
+
 
 

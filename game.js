@@ -1,5 +1,5 @@
 const tg = window.Telegram.WebApp;
-tg.expand(); // делает WebApp во весь экран
+tg.expand(); // на весь экран
 
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
@@ -10,7 +10,7 @@ const counter = document.getElementById('virus-count');
 const infectButton = document.getElementById('infect-button');
 const mutations = document.querySelectorAll('.mutation');
 
-// Базовые цены по умолчанию
+// === Базовые цены ===
 const basePrices = {
   speed: 100,
   shield: 500,
@@ -18,7 +18,7 @@ const basePrices = {
   autoclick: 200,
 };
 
-// Обновление интерфейса
+// === Обновление UI ===
 function updateUI() {
   counter.textContent = virusCount;
   localStorage.setItem('virusCount', virusCount);
@@ -44,7 +44,7 @@ function updateUI() {
   });
 }
 
-// Обновление отображения уровней
+// === Уровни прокачки ===
 function updateLevelsUI() {
   const levelElements = document.querySelectorAll('.level');
   levelElements.forEach(el => {
@@ -53,21 +53,54 @@ function updateLevelsUI() {
   });
 }
 
-// Воспроизведение звука
+// === Звук клика ===
 function playSound() {
   const audio = new Audio('assets/click.mp3');
   audio.play();
 }
 
-// Клик по кнопке INFECT
+// === Размножение вирусов (анимация) ===
+function spawnMiniViruses() {
+  const parent = document.querySelector('.virus-area');
+  const baseX = parent.offsetWidth / 2;
+  const baseY = parent.offsetHeight / 2;
+
+  const amount = Math.floor(Math.random() * 3 + 1);
+
+  for (let i = 0; i < amount; i++) {
+    const virus = document.createElement('div');
+    virus.classList.add('spawned-virus');
+
+    const variants = [
+      'assets/virus1.png',
+      'assets/virus2.png',
+      'assets/virus3.png',
+      'assets/virus4.png',
+      'assets/virus5.png'
+    ];
+    virus.style.backgroundImage = `url(${variants[Math.floor(Math.random() * variants.length)]})`;
+
+    virus.style.left = `${baseX}px`;
+    virus.style.top = `${baseY}px`;
+
+    virus.style.setProperty('--x', Math.random().toFixed(2));
+    virus.style.setProperty('--y', Math.random().toFixed(2));
+
+    parent.appendChild(virus);
+    setTimeout(() => virus.remove(), 1200);
+  }
+}
+
+// === Клик по кнопке INFECT ===
 infectButton.addEventListener('click', () => {
   const bonus = upgrades.speed || 0;
   virusCount += 1 + bonus;
   updateUI();
   playSound();
+  spawnMiniViruses();
 });
 
-// Спам-защита
+// === Анти-спам и апгрейды ===
 let clickTimestamps = [];
 
 mutations.forEach(mutation => {
@@ -100,6 +133,7 @@ mutations.forEach(mutation => {
       upgrades[id] = level + 1;
       upgradeCosts[id] = Math.floor(cost * 1.2);
       updateUI();
+      triggerInfectionEffect();
       showToast(`${mutation.querySelector('strong').childNodes[0].textContent.trim()} upgraded to x${level + 1}!`, 'success');
     } else {
       showToast('Not enough viruses!', 'error');
@@ -107,7 +141,7 @@ mutations.forEach(mutation => {
   });
 });
 
-// Автокликер
+// === Автокликер ===
 setInterval(() => {
   const auto = upgrades.autoclick || 0;
   if (auto > 0) {
@@ -116,19 +150,7 @@ setInterval(() => {
   }
 }, 1000);
 
-// === 🎖 A C H I E V E M E N T S ===
-
-// Кнопка открытия
-document.getElementById('achievements-button').addEventListener('click', () => {
-  document.getElementById('achievements-panel').classList.toggle('hidden');
-});
-
-// Закрыть
-function closeAchievements() {
-  document.getElementById('achievements-panel').classList.add('hidden');
-}
-
-// Разблокировка достижения
+// === Достижения ===
 function unlockAchievement(id, message) {
   const el = document.getElementById(id);
   if (el && !unlockedAchievements[id]) {
@@ -140,14 +162,12 @@ function unlockAchievement(id, message) {
   }
 }
 
-// Проверка условий
 function updateAchievementProgress() {
   if ((upgrades.autoclick || 0) >= 10) {
     unlockAchievement('ach-auto-click', 'Auto Clicker x10!');
   }
 }
 
-// Восстановление разблокированных достижений при запуске
 function restoreAchievements() {
   Object.keys(unlockedAchievements).forEach(id => {
     const el = document.getElementById(id);
@@ -158,7 +178,7 @@ function restoreAchievements() {
   });
 }
 
-// Toast — уведомления
+// === Toast уведомления ===
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
@@ -172,18 +192,7 @@ function showToast(message, type = 'info') {
   }, 2500);
 }
 
-// Стартовые визуальные эффекты (задержка)
-window.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    const virus = document.querySelector('.tap-virus');
-    virus.classList.add('mutating');
-
-    const border = document.querySelector('.infect-border');
-    border.style.display = 'block';
-  }, 2000); // через 2 секунды
-});
-
-// Вспышка заражения при покупке мутации
+// === Визуальный эффект при мутации ===
 function triggerInfectionEffect() {
   const layer = document.getElementById('infection-layer');
   layer.className = 'infection-effect';
@@ -192,6 +201,14 @@ function triggerInfectionEffect() {
   }, 2000);
 }
 
-// === Пуск ===
-restoreAchievements();
-updateUI();
+// === Старт ===
+window.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    const virus = document.querySelector('.tap-virus');
+    virus.classList.add('mutating');
+    const border = document.querySelector('.infect-border');
+    border.style.display = 'block';
+  }, 2000);
+  restoreAchievements();
+  updateUI();
+});
