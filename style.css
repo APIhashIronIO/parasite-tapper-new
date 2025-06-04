@@ -3,7 +3,7 @@ body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background: radial-gradient(circle at top, #101622, #070c15),
-              url('assets/bg-texture.png') center center / cover no-repeat;
+              url('assets/infected-bg.png') center center / cover no-repeat;
   background-blend-mode: overlay;
   color: white;
   overflow: hidden;
