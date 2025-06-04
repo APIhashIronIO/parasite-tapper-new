@@ -9,80 +9,89 @@
 </head>
 <body>
 
-  <!-- 🧬 INFECT TAB -->
-  <main id="tab-infect" class="tab active">
+  <!-- 🧬 INFECT -->
+  <section id="tab-infect" class="tab active">
     <header>
       <div class="header-content">
         <img src="assets/virus.png" class="virus-icon" alt="Virus" />
         <span id="virus-count">0</span> viruses
       </div>
     </header>
+    <main>
+      <div class="virus-area">
+        <img src="assets/virus.png" class="tap-virus" alt="Virus" />
+        <button id="infect-button">INFECT</button>
+      </div>
+    </main>
+  </section>
 
-    <section class="virus-area">
-      <img src="assets/virus.png" class="tap-virus" alt="Virus" />
-      <button id="infect-button">INFECT</button>
-    </section>
-  </main>
+  <!-- 🎖️ MUTATIONS -->
+  <section id="tab-mutations" class="tab hidden">
+    <main>
+      <h2>Mutations</h2>
+      <div class="mutations">
+        <div class="mutation" data-id="speed">
+          <img src="assets/speed.png" />
+          <div>
+            <strong>Rapid Replication <span class="level" data-id="speed">x0</span></strong>
+            <p>COST: 100</p>
+          </div>
+        </div>
 
-  <!-- 🎖️ MUTATIONS TAB -->
-  <main id="tab-mutations" class="tab hidden">
-    <h2>Mutations</h2>
-    <section class="mutations">
-      <div class="mutation" data-id="speed">
-        <img src="assets/speed.png" />
-        <div>
-          <strong>Rapid Replication <span class="level" data-id="speed">x0</span></strong>
-          <p>COST: 100</p>
+        <div class="mutation" data-id="shield">
+          <img src="assets/shield.png" />
+          <div>
+            <strong>Drug Resistance <span class="level" data-id="shield">x0</span></strong>
+            <p>COST: 500</p>
+          </div>
+        </div>
+
+        <div class="mutation" data-id="stealth">
+          <img src="assets/stealth.png" />
+          <div>
+            <strong>Invisibility <span class="level" data-id="stealth">x0</span></strong>
+            <p>COST: 1500</p>
+          </div>
+        </div>
+
+        <div class="mutation" data-id="autoclick">
+          <img src="assets/virus.png" />
+          <div>
+            <strong>Auto Clicker <span class="level" data-id="autoclick">x0</span></strong>
+            <p>COST: 200</p>
+          </div>
         </div>
       </div>
+    </main>
+  </section>
 
-      <div class="mutation" data-id="shield">
-        <img src="assets/shield.png" />
-        <div>
-          <strong>Drug Resistance <span class="level" data-id="shield">x0</span></strong>
-          <p>COST: 500</p>
-        </div>
-      </div>
+  <!-- 🏆 ACHIEVEMENTS -->
+  <section id="tab-achievements" class="tab hidden">
+    <main>
+      <h2>Achievements</h2>
+      <ul id="achievement-list">
+        <li id="ach-auto-click" class="locked">🔒 Auto Clicker x10</li>
+      </ul>
+    </main>
+  </section>
 
-      <div class="mutation" data-id="stealth">
-        <img src="assets/stealth.png" />
-        <div>
-          <strong>Invisibility <span class="level" data-id="stealth">x0</span></strong>
-          <p>COST: 1500</p>
-        </div>
-      </div>
+  <!-- 👤 PROFILE -->
+  <section id="tab-profile" class="tab hidden">
+    <main>
+      <h2>Profile</h2>
+      <p>Coming soon: stats, nickname, etc.</p>
+    </main>
+  </section>
 
-      <div class="mutation" data-id="autoclick">
-        <img src="assets/virus.png" />
-        <div>
-          <strong>Auto Clicker <span class="level" data-id="autoclick">x0</span></strong>
-          <p>COST: 200</p>
-        </div>
-      </div>
-    </section>
-  </main>
+  <!-- ⚙️ SETTINGS -->
+  <section id="tab-settings" class="tab hidden">
+    <main>
+      <h2>Settings</h2>
+      <p>Language / Sound / Reset / Help</p>
+    </main>
+  </section>
 
-  <!-- 🏆 ACHIEVEMENTS TAB -->
-  <main id="tab-achievements" class="tab hidden">
-    <h2>Achievements</h2>
-    <ul id="achievement-list">
-      <li id="ach-auto-click" class="locked">🔒 Auto Clicker x10</li>
-    </ul>
-  </main>
-
-  <!-- 👤 PROFILE TAB -->
-  <main id="tab-profile" class="tab hidden">
-    <h2>Profile</h2>
-    <p>Coming soon: stats, nickname, etc.</p>
-  </main>
-
-  <!-- ⚙️ SETTINGS TAB -->
-  <main id="tab-settings" class="tab hidden">
-    <h2>Settings</h2>
-    <p>Language / Sound / Reset / Help</p>
-  </main>
-
-  <!-- ⚡ FOOTER NAVIGATION -->
+  <!-- 📱 FIXED BOTTOM NAVIGATION -->
   <footer class="bottom-nav">
     <button class="nav-btn active" data-tab="infect">🦠<span>Infect</span></button>
     <button class="nav-btn" data-tab="mutations">🎖️<span>Mutations</span></button>
@@ -91,30 +100,30 @@
     <button class="nav-btn" data-tab="settings">⚙️<span>Settings</span></button>
   </footer>
 
+  <!-- 🧠 SCRIPT -->
   <script src="game.js"></script>
   <script>
-    // Telegram WebApp init
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.expand();
     }
 
-    // Tab switching
     const tabs = document.querySelectorAll('.tab');
     const navButtons = document.querySelectorAll('.nav-btn');
 
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.getAttribute('data-tab');
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.tab;
 
         tabs.forEach(tab => {
           tab.classList.toggle('active', tab.id === 'tab-' + target);
           tab.classList.toggle('hidden', tab.id !== 'tab-' + target);
         });
 
-        navButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
       });
     });
   </script>
+
 </body>
 </html>
