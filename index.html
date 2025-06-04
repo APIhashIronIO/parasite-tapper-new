@@ -5,28 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parasite Tapper</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Telegram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <img src="assets/virus.png" class="virus-icon" alt="Virus icon" />
-      <span id="virus-count">0</span> viruses
-    </div>
-  </header>
 
-  <main>
+  <!-- 🧬 INFECT TAB -->
+  <main id="tab-infect" class="tab active">
+    <header>
+      <div class="header-content">
+        <img src="assets/virus.png" class="virus-icon" alt="Virus" />
+        <span id="virus-count">0</span> viruses
+      </div>
+    </header>
+
     <section class="virus-area">
       <img src="assets/virus.png" class="tap-virus" alt="Virus" />
       <button id="infect-button">INFECT</button>
     </section>
+  </main>
 
+  <!-- 🎖️ MUTATIONS TAB -->
+  <main id="tab-mutations" class="tab hidden">
+    <h2>Mutations</h2>
     <section class="mutations">
-      <h2>Mutations</h2>
-
       <div class="mutation" data-id="speed">
-        <img src="assets/speed.png" alt="Speed upgrade" />
+        <img src="assets/speed.png" />
         <div>
           <strong>Rapid Replication <span class="level" data-id="speed">x0</span></strong>
           <p>COST: 100</p>
@@ -34,7 +37,7 @@
       </div>
 
       <div class="mutation" data-id="shield">
-        <img src="assets/shield.png" alt="Shield upgrade" />
+        <img src="assets/shield.png" />
         <div>
           <strong>Drug Resistance <span class="level" data-id="shield">x0</span></strong>
           <p>COST: 500</p>
@@ -42,7 +45,7 @@
       </div>
 
       <div class="mutation" data-id="stealth">
-        <img src="assets/stealth.png" alt="Stealth upgrade" />
+        <img src="assets/stealth.png" />
         <div>
           <strong>Invisibility <span class="level" data-id="stealth">x0</span></strong>
           <p>COST: 1500</p>
@@ -50,38 +53,68 @@
       </div>
 
       <div class="mutation" data-id="autoclick">
-        <img src="assets/virus.png" alt="Auto Clicker" />
+        <img src="assets/virus.png" />
         <div>
           <strong>Auto Clicker <span class="level" data-id="autoclick">x0</span></strong>
           <p>COST: 200</p>
         </div>
       </div>
     </section>
-
-    <!-- 🏆 Achievements button -->
-    <button id="achievements-button">
-      <img src="assets/achievement.png" alt="Achievements" style="width: 22px;" />
-    </button>
-
-    <!-- 🏆 Achievements panel -->
-    <div id="achievements-panel" class="hidden">
-      <div class="achievements-header">
-        <img src="assets/achievement.png" alt="Trophy Icon" />
-        <span>Achievements</span>
-      </div>
-      <ul id="achievement-list">
-        <li id="ach-auto-click" class="locked">🔒 Auto Clicker x10</li>
-      </ul>
-      <button onclick="closeAchievements()">Close</button>
-    </div>
   </main>
+
+  <!-- 🏆 ACHIEVEMENTS TAB -->
+  <main id="tab-achievements" class="tab hidden">
+    <h2>Achievements</h2>
+    <ul id="achievement-list">
+      <li id="ach-auto-click" class="locked">🔒 Auto Clicker x10</li>
+    </ul>
+  </main>
+
+  <!-- 👤 PROFILE TAB -->
+  <main id="tab-profile" class="tab hidden">
+    <h2>Profile</h2>
+    <p>Coming soon: stats, nickname, etc.</p>
+  </main>
+
+  <!-- ⚙️ SETTINGS TAB -->
+  <main id="tab-settings" class="tab hidden">
+    <h2>Settings</h2>
+    <p>Language / Sound / Reset / Help</p>
+  </main>
+
+  <!-- ⚡ FOOTER NAVIGATION -->
+  <footer class="bottom-nav">
+    <button class="nav-btn active" data-tab="infect">🦠<span>Infect</span></button>
+    <button class="nav-btn" data-tab="mutations">🎖️<span>Mutations</span></button>
+    <button class="nav-btn" data-tab="achievements">🏆<span>Achievements</span></button>
+    <button class="nav-btn" data-tab="profile">👤<span>Profile</span></button>
+    <button class="nav-btn" data-tab="settings">⚙️<span>Settings</span></button>
+  </footer>
 
   <script src="game.js"></script>
   <script>
-    // Telegram WebApp fullscreen
+    // Telegram WebApp init
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.expand();
     }
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const navButtons = document.querySelectorAll('.nav-btn');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+
+        tabs.forEach(tab => {
+          tab.classList.toggle('active', tab.id === 'tab-' + target);
+          tab.classList.toggle('hidden', tab.id !== 'tab-' + target);
+        });
+
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
   </script>
 </body>
 </html>
