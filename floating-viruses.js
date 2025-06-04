@@ -1,10 +1,24 @@
 const container = document.getElementById('floating-virus-container');
 
+const virusVariants = [
+  'assets/virus1.png',
+  'assets/virus2.png',
+  'assets/virus3.png',
+  'assets/virus4.png',
+  'assets/virus5.png'
+];
+
 function spawnVirus() {
   const virus = document.createElement('div');
   virus.className = 'floating-virus';
 
-  const size = Math.random() * 30 + 20;
+  // Случайный спрайт вируса
+  const src = virusVariants[Math.floor(Math.random() * virusVariants.length)];
+  virus.style.backgroundImage = `url(${src})`;
+
+  const size = Math.random() * 50 + 40; // раньше было 20–50, теперь 40–90 пикс
+
+
   virus.style.width = `${size}px`;
   virus.style.height = `${size}px`;
 
@@ -19,5 +33,4 @@ function spawnVirus() {
   }, 15000);
 }
 
-// Периодическое появление
-setInterval(spawnVirus, 800);
+setInterval(spawnVirus, 700); // быстрее, плотнее фон
