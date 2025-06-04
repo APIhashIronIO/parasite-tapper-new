@@ -172,6 +172,26 @@ function showToast(message, type = 'info') {
   }, 2500);
 }
 
+// Стартовые визуальные эффекты (задержка)
+window.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    const virus = document.querySelector('.tap-virus');
+    virus.classList.add('mutating');
+
+    const border = document.querySelector('.infect-border');
+    border.style.display = 'block';
+  }, 2000); // через 2 секунды
+});
+
+// Вспышка заражения при покупке мутации
+function triggerInfectionEffect() {
+  const layer = document.getElementById('infection-layer');
+  layer.className = 'infection-effect';
+  setTimeout(() => {
+    layer.className = '';
+  }, 2000);
+}
+
 // === Пуск ===
 restoreAchievements();
 updateUI();
