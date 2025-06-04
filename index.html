@@ -9,6 +9,10 @@
 </head>
 <body>
 
+  <!-- 🔲 Эффекты фона -->
+  <div class="infect-border"></div>
+  <div id="infection-layer" class=""></div>
+
   <!-- 🧬 INFECT -->
   <section id="tab-infect" class="tab active">
     <header>
@@ -25,7 +29,7 @@
     </main>
   </section>
 
-  <!-- 🎖️ MUTATIONS -->
+  <!-- 🧪 MUTATIONS -->
   <section id="tab-mutations" class="tab hidden">
     <main>
       <h2>Mutations</h2>
@@ -91,7 +95,7 @@
     </main>
   </section>
 
-  <!-- 📱 FIXED BOTTOM NAVIGATION -->
+  <!-- 📱 BOTTOM NAVIGATION -->
   <footer class="bottom-nav">
     <button class="nav-btn active" data-tab="infect">🦠<span>Infect</span></button>
     <button class="nav-btn" data-tab="mutations">🎖️<span>Mutations</span></button>
@@ -100,7 +104,7 @@
     <button class="nav-btn" data-tab="settings">⚙️<span>Settings</span></button>
   </footer>
 
-  <!-- 🧠 SCRIPT -->
+  <!-- 🔧 Скрипт -->
   <script src="game.js"></script>
   <script>
     if (window.Telegram && Telegram.WebApp) {
@@ -123,6 +127,26 @@
         button.classList.add('active');
       });
     });
+
+    // Визуальные эффекты при старте
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        const virus = document.querySelector('.tap-virus');
+        virus.classList.add('mutating');
+
+        const border = document.querySelector('.infect-border');
+        border.style.display = 'block';
+      }, 2000);
+    });
+
+    // Вспышка заражения при апгрейде
+    function triggerInfectionEffect() {
+      const layer = document.getElementById('infection-layer');
+      layer.className = 'infection-effect';
+      setTimeout(() => {
+        layer.className = '';
+      }, 2000);
+    }
   </script>
 
 </body>
