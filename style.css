@@ -9,8 +9,10 @@ body {
   background: radial-gradient(ellipse at center, #041d3d 0%, #010d1f 100%);
   color: #ffffff;
   text-align: center;
+  padding: 0 10px;
 }
 
+/* Шапка */
 header {
   position: sticky;
   top: 0;
@@ -32,12 +34,17 @@ header {
   width: 32px;
 }
 
+/* Главная зона */
 main {
-  padding: 20px;
+  padding: 20px 0;
 }
 
 .virus-area {
   margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .tap-virus {
@@ -51,9 +58,9 @@ main {
   100% { transform: translateY(0px); }
 }
 
+/* Кнопка INFECT */
 #infect-button {
-  margin-top: 15px;
-  padding: 10px 30px;
+  padding: 12px 30px;
   font-size: 20px;
   background: linear-gradient(to bottom, #06f, #00c6ff);
   border: none;
@@ -62,22 +69,29 @@ main {
   box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
   cursor: pointer;
   transition: transform 0.2s ease;
+  max-width: 90vw;
 }
 
 #infect-button:active {
   transform: scale(0.95);
 }
 
+/* Секция мутаций */
 .mutations {
-  margin-top: 40px;
+  margin: 40px auto 60px;
+  max-width: 400px;
+}
+
+.mutations h2 {
+  margin-bottom: 20px;
 }
 
 .mutation {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid #00c6ff30;
   margin: 12px auto;
-  padding: 10px 15px;
-  width: 280px;
+  padding: 12px 16px;
+  width: 100%;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -92,4 +106,30 @@ main {
 
 .mutation img {
   width: 40px;
+}
+
+/* 📱 Адаптация под мобильные устройства */
+@media (max-width: 600px) {
+  header {
+    font-size: 16px;
+  }
+
+  .tap-virus {
+    width: 100px;
+  }
+
+  #infect-button {
+    font-size: 18px;
+    padding: 10px 24px;
+  }
+
+  .mutation {
+    flex-direction: row;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .mutation img {
+    width: 32px;
+  }
 }
