@@ -1,0 +1,95 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: radial-gradient(ellipse at center, #041d3d 0%, #010d1f 100%);
+  color: #ffffff;
+  text-align: center;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  background-color: #020b16cc;
+  padding: 10px;
+  font-size: 20px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.header-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.virus-icon {
+  width: 32px;
+}
+
+main {
+  padding: 20px;
+}
+
+.virus-area {
+  margin-top: 30px;
+}
+
+.tap-virus {
+  width: 120px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+#infect-button {
+  margin-top: 15px;
+  padding: 10px 30px;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #06f, #00c6ff);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#infect-button:active {
+  transform: scale(0.95);
+}
+
+.mutations {
+  margin-top: 40px;
+}
+
+.mutation {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid #00c6ff30;
+  margin: 12px auto;
+  padding: 10px 15px;
+  width: 280px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.mutation:hover {
+  background-color: rgba(0, 255, 255, 0.1);
+}
+
+.mutation img {
+  width: 40px;
+}
