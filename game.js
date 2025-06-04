@@ -1,12 +1,13 @@
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
 let upgradeCosts = JSON.parse(localStorage.getItem('upgradeCosts')) || {};
+let unlockedAchievements = JSON.parse(localStorage.getItem('unlockedAchievements')) || {};
 
 const counter = document.getElementById('virus-count');
 const infectButton = document.getElementById('infect-button');
 const mutations = document.querySelectorAll('.mutation');
 
-// Базовые цены
+// Базовые цены по умолчанию
 const basePrices = {
   speed: 100,
   shield: 500,
@@ -20,6 +21,7 @@ function updateUI() {
   localStorage.setItem('virusCount', virusCount);
   localStorage.setItem('upgrades', JSON.stringify(upgrades));
   localStorage.setItem('upgradeCosts', JSON.stringify(upgradeCosts));
+  localStorage.setItem('unlockedAchievements', JSON.stringify(unlockedAchievements));
   updateLevelsUI();
   updateAchievementProgress();
 
@@ -39,7 +41,7 @@ function updateUI() {
   });
 }
 
-// Обновление уровней (x3 и т.д.)
+// Обновление отображения уровней
 function updateLevelsUI() {
   const levelElements = document.querySelectorAll('.level');
   levelElements.forEach(el => {
@@ -48,19 +50,19 @@ function updateLevelsUI() {
   });
 }
 
-// INFECT
+// Воспроизведение звука
+function playSound() {
+  const audio = new Audio('assets/click.mp3');
+  audio.play();
+}
+
+// Клик по кнопке INFECT
 infectButton.addEventListener('click', () => {
   const bonus = upgrades.speed || 0;
   virusCount += 1 + bonus;
   updateUI();
   playSound();
 });
-
-// Звук
-function playSound() {
-  const audio = new Audio('assets/click.mp3');
-  audio.play();
-}
 
 // Спам-защита
 let clickTimestamps = [];
@@ -95,7 +97,6 @@ mutations.forEach(mutation => {
       upgrades[id] = level + 1;
       upgradeCosts[id] = Math.floor(cost * 1.2);
       updateUI();
-
       showToast(`${mutation.querySelector('strong').childNodes[0].textContent.trim()} upgraded to x${level + 1}!`, 'success');
     } else {
       showToast('Not enough viruses!', 'error');
@@ -103,7 +104,7 @@ mutations.forEach(mutation => {
   });
 });
 
-// 🧠 Автокликер
+// Автокликер
 setInterval(() => {
   const auto = upgrades.autoclick || 0;
   if (auto > 0) {
@@ -112,23 +113,26 @@ setInterval(() => {
   }
 }, 1000);
 
-// 🎖 Achievements
+// === 🎖 A C H I E V E M E N T S ===
 
 // Кнопка открытия
 document.getElementById('achievements-button').addEventListener('click', () => {
   document.getElementById('achievements-panel').classList.toggle('hidden');
 });
 
+// Закрыть
 function closeAchievements() {
   document.getElementById('achievements-panel').classList.add('hidden');
 }
 
-// Разблокировка
+// Разблокировка достижения
 function unlockAchievement(id, message) {
   const el = document.getElementById(id);
-  if (el && el.classList.contains('locked')) {
+  if (el && !unlockedAchievements[id]) {
     el.classList.remove('locked');
     el.classList.add('unlocked');
+    unlockedAchievements[id] = true;
+    localStorage.setItem('unlockedAchievements', JSON.stringify(unlockedAchievements));
     showToast(`🏆 Achievement Unlocked: ${message}`, 'success');
   }
 }
@@ -140,7 +144,18 @@ function updateAchievementProgress() {
   }
 }
 
-// 🔔 Toast
+// Восстановление разблокированных достижений при запуске
+function restoreAchievements() {
+  Object.keys(unlockedAchievements).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.remove('locked');
+      el.classList.add('unlocked');
+    }
+  });
+}
+
+// Toast — уведомления
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
@@ -154,5 +169,6 @@ function showToast(message, type = 'info') {
   }, 2500);
 }
 
-// Старт
+// === Пуск ===
+restoreAchievements();
 updateUI();
