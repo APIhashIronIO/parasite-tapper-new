@@ -187,3 +187,56 @@ header {
     font-size: 0.8rem;
   }
 }
+
+/* Увеличенная и круглая кнопка INFECT */
+#infect-button {
+  margin-top: 1.5rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #00e3ff, #007fff);
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border: none;
+  box-shadow: 0 0 15px #00ffe1;
+  transition: 0.2s;
+}
+
+#infect-button:hover {
+  transform: scale(1.05);
+}
+
+/* Вирус по центру и крупнее */
+.tap-virus {
+  width: 100px;
+  margin-bottom: 1rem;
+}
+
+/* Крупные мутации */
+.mutation {
+  padding: 1.2rem;
+  gap: 1rem;
+}
+
+.mutation img {
+  width: 48px;
+  height: 48px;
+}
+
+.mutation strong {
+  font-size: 1rem;
+}
+
+.mutation p {
+  font-size: 0.9rem;
+}
+
+/* Крупный футер */
+.nav-btn {
+  font-size: 1rem;
+}
+
+.nav-btn span {
+  font-size: 0.8rem;
+}
