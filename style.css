@@ -2,7 +2,9 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(#0a0f1a, #05070d);
+  background: radial-gradient(circle at top, #101622, #070c15),
+              url('assets/bg-texture.png') center center / cover no-repeat;
+  background-blend-mode: overlay;
   color: white;
   overflow: hidden;
   height: 100vh;
@@ -10,23 +12,39 @@ body {
   flex-direction: column;
 }
 
+
+
 header {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 0.8rem 0;
   text-align: center;
-  padding: 1rem 0 0.5rem;
-  background: #000;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #00ffe1;
+  box-shadow: 0 2px 4px #000;
+  z-index: 1000;
+  position: relative;
 }
 
 .header-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .virus-icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
+
+#virus-count {
+  font-size: 1.4rem;
+  color: #ffffff;
+  font-weight: 900;
+  text-shadow: 0 0 8px #00ffe1;
+}
+
 
 /* === Секции / вкладки === */
 .tab {

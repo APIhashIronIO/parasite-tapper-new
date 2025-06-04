@@ -8,28 +8,27 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-
-  <!-- 🔲 Эффекты фона -->
+  <!-- Фон -->
+  <div id="background-overlay"></div>
   <div class="infect-border"></div>
   <div id="infection-layer" class=""></div>
 
-  <!-- 🧬 INFECT -->
+  <!-- INFECT TAB -->
   <section id="tab-infect" class="tab active">
     <header>
       <div class="header-content">
         <img src="assets/virus.png" class="virus-icon" alt="Virus" />
-        <span id="virus-count">0</span> viruses
+        <span id="virus-count">0</span>
+        <span class="virus-label">viruses</span>
       </div>
     </header>
-    <main>
-      <div class="virus-area">
-        <img src="assets/virus.png" class="tap-virus" alt="Virus" />
-        <button id="infect-button">INFECT</button>
-      </div>
+    <main class="virus-area">
+      <img src="assets/virus.png" class="tap-virus main-virus" alt="Virus" />
+      <button id="infect-button" class="infect-btn">INFECT</button>
     </main>
   </section>
 
-  <!-- 🧪 MUTATIONS -->
+  <!-- MUTATIONS TAB -->
   <section id="tab-mutations" class="tab hidden">
     <main>
       <h2>Mutations</h2>
@@ -41,7 +40,6 @@
             <p>COST: 100</p>
           </div>
         </div>
-
         <div class="mutation" data-id="shield">
           <img src="assets/shield.png" />
           <div>
@@ -49,7 +47,6 @@
             <p>COST: 500</p>
           </div>
         </div>
-
         <div class="mutation" data-id="stealth">
           <img src="assets/stealth.png" />
           <div>
@@ -57,7 +54,6 @@
             <p>COST: 1500</p>
           </div>
         </div>
-
         <div class="mutation" data-id="autoclick">
           <img src="assets/virus.png" />
           <div>
@@ -69,7 +65,7 @@
     </main>
   </section>
 
-  <!-- 🏆 ACHIEVEMENTS -->
+  <!-- ACHIEVEMENTS TAB -->
   <section id="tab-achievements" class="tab hidden">
     <main>
       <h2>Achievements</h2>
@@ -79,37 +75,29 @@
     </main>
   </section>
 
-  <!-- 👤 PROFILE -->
+  <!-- PROFILE TAB -->
   <section id="tab-profile" class="tab hidden">
-    <main>
-      <h2>Profile</h2>
-      <p>Coming soon: stats, nickname, etc.</p>
-    </main>
+    <main><h2>Profile</h2><p>Coming soon: stats, nickname, etc.</p></main>
   </section>
 
-  <!-- ⚙️ SETTINGS -->
+  <!-- SETTINGS TAB -->
   <section id="tab-settings" class="tab hidden">
-    <main>
-      <h2>Settings</h2>
-      <p>Language / Sound / Reset / Help</p>
-    </main>
+    <main><h2>Settings</h2><p>Language / Sound / Reset / Help</p></main>
   </section>
 
-  <!-- 📱 BOTTOM NAVIGATION -->
+  <!-- BOTTOM NAVIGATION -->
   <footer class="bottom-nav">
     <button class="nav-btn active" data-tab="infect">🦠<span>Infect</span></button>
-    <button class="nav-btn" data-tab="mutations">🎖️<span>Mutations</span></button>
+    <button class="nav-btn" data-tab="mutations">🧬<span>Mutations</span></button>
     <button class="nav-btn" data-tab="achievements">🏆<span>Achievements</span></button>
     <button class="nav-btn" data-tab="profile">👤<span>Profile</span></button>
     <button class="nav-btn" data-tab="settings">⚙️<span>Settings</span></button>
   </footer>
 
-  <!-- 🔧 Скрипт -->
+  <!-- SCRIPT -->
   <script src="game.js"></script>
   <script>
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.expand();
-    }
+    if (window.Telegram && Telegram.WebApp) Telegram.WebApp.expand();
 
     const tabs = document.querySelectorAll('.tab');
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -117,37 +105,31 @@
     navButtons.forEach(button => {
       button.addEventListener('click', () => {
         const target = button.dataset.tab;
-
         tabs.forEach(tab => {
           tab.classList.toggle('active', tab.id === 'tab-' + target);
           tab.classList.toggle('hidden', tab.id !== 'tab-' + target);
         });
-
         navButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
       });
     });
 
-    // Визуальные эффекты при старте
+    // Заражение при старте
     window.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         const virus = document.querySelector('.tap-virus');
         virus.classList.add('mutating');
-
         const border = document.querySelector('.infect-border');
         border.style.display = 'block';
       }, 2000);
     });
 
-    // Вспышка заражения при апгрейде
+    // Заражённый фон при апгрейде
     function triggerInfectionEffect() {
       const layer = document.getElementById('infection-layer');
       layer.className = 'infection-effect';
-      setTimeout(() => {
-        layer.className = '';
-      }, 2000);
+      setTimeout(() => { layer.className = ''; }, 2000);
     }
   </script>
-
 </body>
 </html>
