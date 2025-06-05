@@ -729,7 +729,19 @@ html, body {
   #boss-virus-container {
     height: 340px;
   }
-}
+#rank-popup button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #00ffff;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffff;
+}}
+
 
 
 

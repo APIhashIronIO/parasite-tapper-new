@@ -15,6 +15,10 @@ const rankLevels = [
 ];
 
 let currentRankIndex = 0;
+const savedRank = localStorage.getItem('savedRankIndex');
+if (savedRank !== null) {
+  currentRankIndex = parseInt(savedRank);
+}
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
 let upgradeCosts = JSON.parse(localStorage.getItem('upgradeCosts')) || {};
 let unlockedAchievements = JSON.parse(localStorage.getItem('unlockedAchievements')) || {};
@@ -103,6 +107,7 @@ function updateRankIfNeeded() {
 
   if (newRankIndex !== currentRankIndex) {
     currentRankIndex = newRankIndex;
+    localStorage.setItem('savedRankIndex', currentRankIndex);
     updateRankDisplay();
     showRankPopup();
   }
@@ -120,8 +125,13 @@ function showRankPopup() {
   document.getElementById('rank-popup-name').textContent = 'Новый ранг: ' + rank.name;
   const popup = document.getElementById('rank-popup');
   popup.classList.remove('hidden');
-  setTimeout(() => popup.classList.add('hidden'), 3000);
+
+  const okBtn = document.getElementById('rank-popup-ok');
+  okBtn.onclick = () => {
+    popup.classList.add('hidden');
+  };
 }
+
 
 // === Клики ===
 function infect() {
