@@ -743,6 +743,36 @@ html, body {
   box-shadow: 0 0 10px #00ffff;
 }}
 
+.ref-container {
+  background: rgba(0, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #00ffff33;
+  margin-bottom: 1rem;
+}
+
+.ref-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  color: #0ff;
+  font-weight: bold;
+}
+
+#copy-ref {
+  padding: 6px 12px;
+  border: none;
+  background: #00ffff;
+  color: #000;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 
 
 

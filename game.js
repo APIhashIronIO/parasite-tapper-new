@@ -1,3 +1,20 @@
+// генерируем/сохраняем реф-код
+let myRefCode = localStorage.getItem('myRefCode');
+if (!myRefCode) {
+  myRefCode = Math.floor(Math.random() * 1e8).toString();
+  localStorage.setItem('myRefCode', myRefCode);
+}
+
+// проверяем вход по реф-ссылке
+const urlParams = new URLSearchParams(window.location.search);
+const refFrom = urlParams.get('ref');
+if (refFrom && !localStorage.getItem('invitedBy')) {
+  localStorage.setItem('invitedBy', refFrom);
+  localStorage.setItem('bonusGiven', 'yes');
+  virusCount += 100;
+  updateUI();
+}
+
 let totalEarned = parseInt(localStorage.getItem('totalEarned')) || 0;
 let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
 

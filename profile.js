@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const nameInput = document.getElementById('nickname');
-  const saveBtn = document.getElementById('save-nickname');
-  const totalClicks = document.getElementById('total-clicks');
-  const totalEarned = document.getElementById('total-earned');
+  const copyBtn = document.getElementById('copy-ref');
+  const refDisplay = document.getElementById('ref-link');
+  const refCount = document.getElementById('ref-count');
 
-  // Никнейм
-  nameInput.value = localStorage.getItem('nickname') || '';
-  saveBtn.addEventListener('click', () => {
-    localStorage.setItem('nickname', nameInput.value.trim());
-    alert('Nickname saved!');
+  const myCode = localStorage.getItem('myRefCode');
+  refDisplay.textContent = `https://apihashironio.github.io/parasite-tapper-new/?ref=${myCode}`;
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(refDisplay.textContent);
+    alert('Referral link copied!');
   });
 
-  // Статистика
-  totalClicks.textContent = localStorage.getItem('totalClicks') || 0;
-  totalEarned.textContent = localStorage.getItem('totalEarned') || 0;
+  // счётчик — пока просто считываем
+  const count = parseInt(localStorage.getItem('refCount')) || 0;
+  refCount.textContent = count;
 });

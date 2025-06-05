@@ -86,19 +86,25 @@
 
   <!-- PROFILE TAB (НОВЫЙ) -->
   <section id="tab-profile" class="tab hidden">
-    <main>
-      <h2>Profile</h2>
+  <main>
+    <h2>Profile</h2>
 
-      <label for="nickname">Nickname:</label>
-      <input type="text" id="nickname" placeholder="Enter your nickname" />
-      <button id="save-nickname">Save</button>
+    <div class="ref-container">
+      <p>Your referral link:</p>
+      <div class="ref-box">
+        <span id="ref-link"></span>
+        <button id="copy-ref">Copy</button>
+      </div>
+      <p>Invited: <span id="ref-count">0</span> users</p>
+    </div>
 
-      <hr />
+    <hr />
 
-      <p>Total Clicks: <span id="total-clicks">0</span></p>
-      <p>Total Viruses Earned: <span id="total-earned">0</span></p>
-    </main>
-  </section>
+    <p>Total Clicks: <span id="total-clicks">0</span></p>
+    <p>Total Viruses Earned: <span id="total-earned">0</span></p>
+  </main>
+</section>
+
 
   <!-- SETTINGS TAB -->
   <section id="tab-settings" class="tab hidden">
