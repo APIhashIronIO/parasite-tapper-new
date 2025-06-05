@@ -614,6 +614,59 @@ header {
   }
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.virus-area {
+  height: 100%;
+  justify-content: flex-start;
+  padding-top: 6vh;
+}
+
+#boss-virus-container {
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 300px;
+}
+
+#boss-virus {
+  width: 280px;
+  height: 280px;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 480px) {
+  #rank-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  #rank-name {
+    font-size: 1rem;
+  }
+
+  .rank-display {
+    gap: 0.4rem;
+    margin-right: 1rem;
+  }
+
+  #boss-virus {
+    width: 200px;
+    height: 200px;
+  }
+
+  #boss-virus-container {
+    height: 240px;
+  }
+
+  .virus-area {
+    padding-top: 4vh;
+  }
+}
+
+
 
 
 
