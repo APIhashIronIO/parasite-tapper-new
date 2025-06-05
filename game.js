@@ -2,6 +2,26 @@ const tg = window.Telegram.WebApp;
 tg.expand(); // на весь экран
 
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
+const ranks = [
+  { threshold: 0, name: "Новичок", image: "assets/rank1.png" },
+  { threshold: 10000, name: "Угроза", image: "assets/rank2.png" },
+  { threshold: 25000, name: "Эпидемия", image: "assets/rank3.png" },
+  { threshold: 50000, name: "Пандемия", image: "assets/rank4.png" },
+  { threshold: 100000, name: "Чума", image: "assets/rank5.png" },
+  { threshold: 250000, name: "Мутант", image: "assets/rank6.png" },
+  { threshold: 500000, name: "Босс-вирус", image: "assets/rank7.png" },
+  { threshold: 1000000, name: "Апокалипсис", image: "assets/rank8.png" },
+  { threshold: 2500000, name: "Властелин инфекции", image: "assets/rank9.png" }
+];
+
+function updateRankDisplay() {
+  const currentRank = ranks.slice().reverse().find(r => virusCount >= r.threshold);
+  if (currentRank) {
+    document.getElementById('rank-icon').src = currentRank.image;
+    document.getElementById('rank-name').textContent = currentRank.name;
+  }
+}
+
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
 let upgradeCosts = JSON.parse(localStorage.getItem('upgradeCosts')) || {};
 let unlockedAchievements = JSON.parse(localStorage.getItem('unlockedAchievements')) || {};
@@ -211,4 +231,5 @@ window.addEventListener("DOMContentLoaded", () => {
   }, 2000);
   restoreAchievements();
   updateUI();
+  updateRankDisplay();
 });
