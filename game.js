@@ -1,3 +1,6 @@
+let totalEarned = parseInt(localStorage.getItem('totalEarned')) || 0;
+let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
+
 const tg = window.Telegram.WebApp;
 tg.expand();
 
@@ -137,10 +140,17 @@ function showRankPopup() {
 function infect() {
   const bonus = upgrades.speed || 0;
   virusCount += 1 + bonus;
+
+  totalClicks++;
+  totalEarned += 1 + bonus;
+  localStorage.setItem('totalClicks', totalClicks);
+  localStorage.setItem('totalEarned', totalEarned);
+
   updateUI();
   playSound();
   spawnMiniViruses();
 }
+
 
 infectButton.addEventListener('click', infect);
 boss.addEventListener('click', infect);

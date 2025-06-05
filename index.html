@@ -8,11 +8,11 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <!-- Фон и эффект -->
+  <!-- Эффекты -->
   <div id="floating-virus-container"></div>
   <div id="background-overlay"></div>
   <div class="infect-border"></div>
-  <div id="infection-layer" class=""></div>
+  <div id="infection-layer"></div>
 
   <!-- INFECT TAB -->
   <section id="tab-infect" class="tab active">
@@ -21,7 +21,6 @@
         <img src="assets/virus.png" class="virus-icon" alt="Virus" />
         <span id="virus-count">0</span>
         <span class="virus-label">viruses</span>
-        <!-- Ранг -->
         <div class="rank-display">
           <img id="rank-image" src="assets/rank1.png" alt="Rank Icon" />
           <span id="rank-name">Новичок</span>
@@ -85,25 +84,38 @@
     </main>
   </section>
 
-  <!-- PROFILE TAB -->
+  <!-- PROFILE TAB (НОВЫЙ) -->
   <section id="tab-profile" class="tab hidden">
-    <main><h2>Profile</h2><p>Coming soon: stats, nickname, etc.</p></main>
+    <main>
+      <h2>Profile</h2>
+
+      <label for="nickname">Nickname:</label>
+      <input type="text" id="nickname" placeholder="Enter your nickname" />
+      <button id="save-nickname">Save</button>
+
+      <hr />
+
+      <p>Total Clicks: <span id="total-clicks">0</span></p>
+      <p>Total Viruses Earned: <span id="total-earned">0</span></p>
+    </main>
   </section>
 
   <!-- SETTINGS TAB -->
   <section id="tab-settings" class="tab hidden">
-    <main><h2>Settings</h2><p>Language / Sound / Reset / Help</p></main>
+    <main>
+      <h2>Settings</h2>
+      <p>Language / Sound / Reset / Help</p>
+    </main>
   </section>
 
-  <!-- Всплывающее окно при повышении ранга -->
-<div id="rank-popup" class="hidden">
-  <img id="rank-popup-img" src="" alt="Rank Popup" />
-  <div id="rank-popup-name"></div>
-  <button id="rank-popup-ok">OK</button>
-</div>
+  <!-- Всплывающее окно нового ранга -->
+  <div id="rank-popup" class="hidden">
+    <img id="rank-popup-img" src="" alt="Rank Popup" />
+    <div id="rank-popup-name"></div>
+    <button id="rank-popup-ok">OK</button>
+  </div>
 
-
-  <!-- Навигация -->
+  <!-- Нижняя навигация -->
   <footer class="bottom-nav">
     <button class="nav-btn active" data-tab="infect">🦠<span>Infect</span></button>
     <button class="nav-btn" data-tab="mutations">🧬<span>Mutations</span></button>
@@ -115,6 +127,7 @@
   <!-- JS -->
   <script src="game.js"></script>
   <script src="floating-viruses.js"></script>
+  <script src="profile.js"></script>
   <script>
     if (window.Telegram && Telegram.WebApp) Telegram.WebApp.expand();
 
@@ -133,7 +146,6 @@
       });
     });
 
-    // Эффект заражения при загрузке
     window.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         const virus = document.querySelector('.tap-virus');
