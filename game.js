@@ -1,17 +1,20 @@
+let clickSound = new Audio('assets/sounds/click.mp3');
+clickSound.load();
+
 const tg = window.Telegram.WebApp;
 tg.expand(); // на весь экран
 
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
 const rankLevels = [
   { name: 'Новичок', image: 'assets/rank1.png', threshold: 0 },
-  { name: 'Зараза', image: 'assets/rank2.png', threshold: 10000 },
-  { name: 'Эпидемия', image: 'assets/rank3.png', threshold: 30000 },
-  { name: 'Пандемия', image: 'assets/rank4.png', threshold: 80000 },
-  { name: 'Мутант', image: 'assets/rank5.png', threshold: 200000 },
-  { name: 'Угроза', image: 'assets/rank6.png', threshold: 500000 },
-  { name: 'Чума', image: 'assets/rank7.png', threshold: 1000000 },
-  { name: 'Киберпаразит', image: 'assets/rank8.png', threshold: 2000000 },
-  { name: 'Глобальный Вирус', image: 'assets/rank9.png', threshold: 5000000 }
+  { name: 'Зараза', image: 'assets/rank2.png', threshold: 1000 },
+  { name: 'Эпидемия', image: 'assets/rank3.png', threshold: 10000 },
+  { name: 'Пандемия', image: 'assets/rank4.png', threshold: 30000 },
+  { name: 'Мутант', image: 'assets/rank5.png', threshold: 50000 },
+  { name: 'Угроза', image: 'assets/rank6.png', threshold: 250000 },
+  { name: 'Чума', image: 'assets/rank7.png', threshold: 500000 },
+  { name: 'Киберпаразит', image: 'assets/rank8.png', threshold: 750000 },
+  { name: 'Глобальный Вирус', image: 'assets/rank9.png', threshold: 1000000 }
 ];
 
 let currentRankIndex = 0;
@@ -77,10 +80,16 @@ function updateLevelsUI() {
 }
 
 // === Звук клика ===
-function playSound() {
-  const audio = new Audio('assets/click.mp3');
-  audio.play();
+let clickSound = null;
+
+function initSound() {
+  if (!clickSound) {
+    clickSound = new Audio('assets/sounds/click.mp3');
+    clickSound.load();
+  }
 }
+
+
 
 // === Размножение вирусов (анимация) ===
 function spawnMiniViruses() {
@@ -116,13 +125,18 @@ function spawnMiniViruses() {
 
 // === Клик по кнопке INFECT ===
 infectButton.addEventListener('click', () => {
+  if (clickSound) {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {});
+  }
+
   const bonus = upgrades.speed || 0;
   virusCount += 1 + bonus;
   updateUI();
   updateVirusCountDisplay();
-  playSound();
   spawnMiniViruses();
 });
+
 
 // === Анти-спам и апгрейды ===
 let clickTimestamps = [];
