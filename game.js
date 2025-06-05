@@ -2,17 +2,20 @@ const tg = window.Telegram.WebApp;
 tg.expand(); // на весь экран
 
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
-const ranks = [
-  { threshold: 0, name: "Новичок", image: "assets/rank1.png" },
-  { threshold: 10000, name: "Угроза", image: "assets/rank2.png" },
-  { threshold: 25000, name: "Эпидемия", image: "assets/rank3.png" },
-  { threshold: 50000, name: "Пандемия", image: "assets/rank4.png" },
-  { threshold: 100000, name: "Чума", image: "assets/rank5.png" },
-  { threshold: 250000, name: "Мутант", image: "assets/rank6.png" },
-  { threshold: 500000, name: "Босс-вирус", image: "assets/rank7.png" },
-  { threshold: 1000000, name: "Апокалипсис", image: "assets/rank8.png" },
-  { threshold: 2500000, name: "Властелин инфекции", image: "assets/rank9.png" }
+const rankLevels = [
+  { name: 'Новичок', image: 'assets/rank1.png', threshold: 0 },
+  { name: 'Зараза', image: 'assets/rank2.png', threshold: 10000 },
+  { name: 'Эпидемия', image: 'assets/rank3.png', threshold: 30000 },
+  { name: 'Пандемия', image: 'assets/rank4.png', threshold: 80000 },
+  { name: 'Мутант', image: 'assets/rank5.png', threshold: 200000 },
+  { name: 'Угроза', image: 'assets/rank6.png', threshold: 500000 },
+  { name: 'Чума', image: 'assets/rank7.png', threshold: 1000000 },
+  { name: 'Киберпаразит', image: 'assets/rank8.png', threshold: 2000000 },
+  { name: 'Глобальный Вирус', image: 'assets/rank9.png', threshold: 5000000 }
 ];
+
+let currentRankIndex = 0;
+
 
 function updateRankDisplay() {
   const currentRank = ranks.slice().reverse().find(r => virusCount >= r.threshold);
@@ -116,6 +119,7 @@ infectButton.addEventListener('click', () => {
   const bonus = upgrades.speed || 0;
   virusCount += 1 + bonus;
   updateUI();
+  updateVirusCountDisplay();
   playSound();
   spawnMiniViruses();
 });
@@ -167,6 +171,7 @@ setInterval(() => {
   if (auto > 0) {
     virusCount += auto;
     updateUI();
+    updateVirusCountDisplay();
   }
 }, 1000);
 
@@ -233,3 +238,41 @@ window.addEventListener("DOMContentLoaded", () => {
   updateUI();
   updateRankDisplay();
 });
+
+function updateVirusCountDisplay() {
+  virusCountDisplay.textContent = virusCount.toLocaleString();
+
+  // Обновление ранга
+  let newRankIndex = currentRankIndex;
+  for (let i = rankLevels.length - 1; i >= 0; i--) {
+    if (virusCount >= rankLevels[i].threshold) {
+      newRankIndex = i;
+      break;
+    }
+  }
+
+  if (newRankIndex !== currentRankIndex) {
+    currentRankIndex = newRankIndex;
+    updateRankDisplay();
+    showRankPopup();
+  }
+}
+
+function updateRankDisplay() {
+  const rank = rankLevels[currentRankIndex];
+  document.getElementById('rank-image').src = rank.image;
+  document.getElementById('rank-name').textContent = rank.name;
+}
+
+function showRankPopup() {
+  const rank = rankLevels[currentRankIndex];
+  const popup = document.getElementById('rank-popup');
+  document.getElementById('rank-popup-img').src = rank.image;
+  document.getElementById('rank-popup-name').textContent = 'Новый ранг: ' + rank.name;
+  popup.classList.remove('hidden');
+
+  setTimeout(() => {
+    popup.classList.add('hidden');
+  }, 3000);
+}
+
