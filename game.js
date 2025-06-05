@@ -19,6 +19,7 @@ const savedRank = localStorage.getItem('savedRankIndex');
 if (savedRank !== null) {
   currentRankIndex = parseInt(savedRank);
 }
+
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
 let upgradeCosts = JSON.parse(localStorage.getItem('upgradeCosts')) || {};
 let unlockedAchievements = JSON.parse(localStorage.getItem('unlockedAchievements')) || {};
@@ -97,20 +98,20 @@ function spawnMiniViruses() {
 }
 
 function updateRankIfNeeded() {
-  let newRankIndex = currentRankIndex;
-  for (let i = rankLevels.length - 1; i >= 0; i--) {
+  const saved = parseInt(localStorage.getItem('savedRankIndex')) || 0;
+
+  for (let i = saved + 1; i < rankLevels.length; i++) {
     if (virusCount >= rankLevels[i].threshold) {
-      newRankIndex = i;
-      break;
+      currentRankIndex = i;
+      localStorage.setItem('savedRankIndex', currentRankIndex);
+      updateRankDisplay();
+      showRankPopup();
+      return;
     }
   }
 
-  if (newRankIndex !== currentRankIndex) {
-    currentRankIndex = newRankIndex;
-    localStorage.setItem('savedRankIndex', currentRankIndex);
-    updateRankDisplay();
-    showRankPopup();
-  }
+  currentRankIndex = saved;
+  updateRankDisplay();
 }
 
 function updateRankDisplay() {
@@ -131,7 +132,6 @@ function showRankPopup() {
     popup.classList.add('hidden');
   };
 }
-
 
 // === Клики ===
 function infect() {

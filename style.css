@@ -570,8 +570,9 @@ header {
   text-align: center;
   z-index: 9999;
   box-shadow: 0 0 20px #00ffff;
-  animation: popupFade 2s ease-out;
+  /* убираем animation: popupFade */
 }
+
 
 #rank-popup img {
   width: 120px;
