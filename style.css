@@ -675,6 +675,63 @@ html, body {
   }
 }
 
+/* --- УНИВЕРСАЛЬНОЕ: ВЕРХНИЙ РАНГ + ВИРУС --- */
+.rank-display {
+  gap: 0.6rem;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+#rank-image {
+  width: 140px;
+  height: 140px;
+  filter: drop-shadow(0 0 8px #00f0ff);
+}
+
+#rank-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #b8eaff;
+  text-shadow: 0 0 5px #00f0ff;
+}
+
+/* --- БОЛЬШОЙ БОСС --- */
+#boss-virus-container {
+  margin-top: 0;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#boss-virus {
+  width: 420px;
+  height: 420px;
+}
+
+/* --- МОБИЛЬНАЯ АДАПТАЦИЯ --- */
+@media (max-width: 480px) {
+  #rank-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  #rank-name {
+    font-size: 1rem;
+  }
+
+  #boss-virus {
+    width: 320px;
+    height: 320px;
+  }
+
+  #boss-virus-container {
+    height: 340px;
+  }
+}
+
+
 
 
 
