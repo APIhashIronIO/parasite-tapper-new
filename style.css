@@ -464,18 +464,15 @@ header {
 }
 
 #boss-virus-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  height: 340px;
+  margin-top: 10px; /* ближе к верху */
+  margin-bottom: 0;
+  height: 480px; /* больше высота под увеличенный вирус */
 }
 
+
 #boss-virus {
-  width: 300px;
-  height: 300px;
+  width: 450px;
+  height: 450px;
 }
 
 /* Прозрачная кнопка-хитбокс */
