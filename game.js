@@ -53,9 +53,21 @@ function updateUI() {
 function updateLevelsUI() {
   document.querySelectorAll('.level').forEach(el => {
     const id = el.dataset.id;
-    el.textContent = `x${upgrades[id] || 0}`;
+    const level = upgrades[id] || 0;
+    el.textContent = `x${level}`;
+
+    // Обновляем цену
+    const cost = upgradeCosts[id] || basePrices[id];
+    const parent = el.closest('.mutation');
+    if (parent) {
+      const costText = parent.querySelector('p');
+      if (costText) {
+        costText.textContent = `COST: ${cost}`;
+      }
+    }
   });
 }
+
 
 function updateCardButtons() {
   gameState.cards.forEach(card => {
