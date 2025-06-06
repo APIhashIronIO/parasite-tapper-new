@@ -63,7 +63,7 @@
 
   <!-- CARDS TAB -->
   <section id="tab-cards" class="tab hidden">
-    <main>
+    <main style="padding-bottom: 100px;">
       <h2>Cards</h2>
       <div class="cards-grid" id="cards-container"></div>
     </main>
@@ -116,10 +116,26 @@
   <script type="module" src="tabs.js"></script>
   <script type="module" src="floating-viruses.js"></script>
 
-
   <!-- INLINE CARD RENDER -->
   <script type="module">
     import cards from './cardsSystem.js';
+
+    function formatBonus(card) {
+      const format = (n) => {
+        if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + "B";
+        if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+        if (n >= 1000) return (n / 1000).toFixed(1) + "K";
+        return n.toString();
+      };
+
+      if (card.bonus.perSecond) {
+        return `+${format(card.bonus.perSecond)} / sec`;
+      } else if (card.bonus.perMinute) {
+        return `+${format(card.bonus.perMinute)} / min`;
+      } else {
+        return "+0";
+      }
+    }
 
     function renderCardsUI() {
       const container = document.getElementById('cards-container');
@@ -131,7 +147,7 @@
         div.innerHTML = `
           <img src="${card.icon}" class="card-icon" />
           <strong>${card.name}</strong>
-          <p>${card.bonus.perSecond ? `+${card.bonus.perSecond}/sec` : `+${card.bonus.perMinute}/min`}</p>
+          <p>${formatBonus(card)}</p>
           <button id="buy-card-${card.id}" onclick="buyCard(${card.id})">
             ${card.bought ? 'Owned' : `Buy (${card.cost})`}
           </button>
@@ -150,7 +166,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      padding: 10px;
+      padding: 10px 10px 100px;
     }
     .card {
       background: #111;
