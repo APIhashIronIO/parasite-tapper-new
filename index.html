@@ -27,7 +27,6 @@
         </div>
       </div>
     </header>
-
     <main class="virus-area">
       <div id="boss-virus-container">
         <div id="boss-virus">
@@ -44,67 +43,49 @@
       <div class="mutations">
         <div class="mutation" data-id="speed">
           <img src="assets/speed.png" />
-          <div>
-            <strong>Rapid Replication <span class="level" data-id="speed">x0</span></strong>
-            <p>COST: 100</p>
-          </div>
+          <div><strong>Rapid Replication <span class="level" data-id="speed">x0</span></strong><p>COST: 100</p></div>
         </div>
         <div class="mutation" data-id="shield">
           <img src="assets/shield.png" />
-          <div>
-            <strong>Drug Resistance <span class="level" data-id="shield">x0</span></strong>
-            <p>COST: 500</p>
-          </div>
+          <div><strong>Drug Resistance <span class="level" data-id="shield">x0</span></strong><p>COST: 500</p></div>
         </div>
         <div class="mutation" data-id="stealth">
           <img src="assets/stealth.png" />
-          <div>
-            <strong>Invisibility <span class="level" data-id="stealth">x0</span></strong>
-            <p>COST: 1500</p>
-          </div>
+          <div><strong>Invisibility <span class="level" data-id="stealth">x0</span></strong><p>COST: 1500</p></div>
         </div>
         <div class="mutation" data-id="autoclick">
           <img src="assets/autoclick.png" />
-          <div>
-            <strong>Auto Clicker <span class="level" data-id="autoclick">x0</span></strong>
-            <p>COST: 200</p>
-          </div>
+          <div><strong>Auto Clicker <span class="level" data-id="autoclick">x0</span></strong><p>COST: 200</p></div>
         </div>
       </div>
     </main>
   </section>
 
-  <!-- ACHIEVEMENTS TAB -->
-  <section id="tab-achievements" class="tab hidden">
+  <!-- CARDS TAB -->
+  <section id="tab-cards" class="tab hidden">
     <main>
-      <h2>Achievements</h2>
-      <ul id="achievement-list">
-        <li id="ach-auto-click" class="locked">🔒 Auto Clicker x10</li>
-      </ul>
+      <h2>Cards</h2>
+      <div class="cards-grid" id="cards-container"></div>
     </main>
   </section>
 
-  <!-- PROFILE TAB (НОВЫЙ) -->
+  <!-- PROFILE TAB -->
   <section id="tab-profile" class="tab hidden">
-  <main>
-    <h2>Profile</h2>
-
-    <div class="ref-container">
-      <p>Your referral link:</p>
-      <div class="ref-box">
-        <span id="ref-link"></span>
-        <button id="copy-ref">Copy</button>
+    <main>
+      <h2>Profile</h2>
+      <div class="ref-container">
+        <p>Your referral link:</p>
+        <div class="ref-box">
+          <span id="ref-link"></span>
+          <button id="copy-ref">Copy</button>
+        </div>
+        <p>Invited: <span id="ref-count">0</span> users</p>
       </div>
-      <p>Invited: <span id="ref-count">0</span> users</p>
-    </div>
-
-    <hr />
-
-    <p>Total Clicks: <span id="total-clicks">0</span></p>
-    <p>Total Viruses Earned: <span id="total-earned">0</span></p>
-  </main>
-</section>
-
+      <hr />
+      <p>Total Clicks: <span id="total-clicks">0</span></p>
+      <p>Total Viruses Earned: <span id="total-earned">0</span></p>
+    </main>
+  </section>
 
   <!-- SETTINGS TAB -->
   <section id="tab-settings" class="tab hidden">
@@ -114,58 +95,88 @@
     </main>
   </section>
 
-  <!-- Всплывающее окно нового ранга -->
+  <!-- RANK POPUP -->
   <div id="rank-popup" class="hidden">
     <img id="rank-popup-img" src="" alt="Rank Popup" />
     <div id="rank-popup-name"></div>
     <button id="rank-popup-ok">OK</button>
   </div>
 
-  <!-- Нижняя навигация -->
+  <!-- FOOTER NAVIGATION -->
   <footer class="bottom-nav">
     <button class="nav-btn active" data-tab="infect">🦠<span>Infect</span></button>
     <button class="nav-btn" data-tab="mutations">🧬<span>Mutations</span></button>
-    <button class="nav-btn" data-tab="achievements">🏆<span>Achievements</span></button>
+    <button class="nav-btn" data-tab="cards">🃏<span>Cards</span></button>
     <button class="nav-btn" data-tab="profile">👤<span>Profile</span></button>
     <button class="nav-btn" data-tab="settings">⚙️<span>Settings</span></button>
   </footer>
 
   <!-- JS -->
-  <script src="game.js"></script>
-  <script src="floating-viruses.js"></script>
-  <script src="profile.js"></script>
-  <script>
-    if (window.Telegram && Telegram.WebApp) Telegram.WebApp.expand();
+  <script type="module" src="game.js"></script>
+  <script type="module" src="tabs.js"></script>
 
-    const tabs = document.querySelectorAll('.tab');
-    const navButtons = document.querySelectorAll('.nav-btn');
+  <!-- INLINE CARD RENDER -->
+  <script type="module">
+    import cards from './cardsSystem.js';
 
-    navButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const target = button.dataset.tab;
-        tabs.forEach(tab => {
-          tab.classList.toggle('active', tab.id === 'tab-' + target);
-          tab.classList.toggle('hidden', tab.id !== 'tab-' + target);
-        });
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+    function renderCardsUI() {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+
+      cards.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${card.icon}" class="card-icon" />
+          <strong>${card.name}</strong>
+          <p>${card.bonus.perSecond ? `+${card.bonus.perSecond}/sec` : `+${card.bonus.perMinute}/min`}</p>
+          <button id="buy-card-${card.id}" onclick="buyCard(${card.id})">
+            ${card.bought ? 'Owned' : `Buy (${card.cost})`}
+          </button>
+        `;
+        container.appendChild(div);
       });
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => {
-        const virus = document.querySelector('.tap-virus');
-        virus?.classList.add('mutating');
-        const border = document.querySelector('.infect-border');
-        border.style.display = 'block';
-      }, 2000);
-    });
-
-    function triggerInfectionEffect() {
-      const layer = document.getElementById('infection-layer');
-      layer.className = 'infection-effect';
-      setTimeout(() => { layer.className = ''; }, 2000);
     }
+
+    window.addEventListener('DOMContentLoaded', renderCardsUI);
+    window.renderCardsUI = renderCardsUI;
   </script>
+
+  <!-- CARD STYLES -->
+  <style>
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 10px;
+    }
+    .card {
+      background: #111;
+      border: 2px solid #444;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      color: white;
+    }
+    .card-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 8px;
+    }
+    .card button {
+      margin-top: 6px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background-color: #33cc33;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .card button:disabled {
+      background-color: gray;
+      cursor: default;
+    }
+  </style>
 </body>
 </html>

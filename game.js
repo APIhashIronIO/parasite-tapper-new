@@ -1,49 +1,36 @@
-// генерируем/сохраняем реф-код
-let myRefCode = localStorage.getItem('myRefCode');
-if (!myRefCode) {
-  myRefCode = Math.floor(Math.random() * 1e8).toString();
-  localStorage.setItem('myRefCode', myRefCode);
-}
+import cards, { applyCardBonuses } from './cardsSystem.js';
+import { saveCardsState, loadCardsState } from './storageManager.js';
 
-// проверяем вход по реф-ссылке
-const urlParams = new URLSearchParams(window.location.search);
-const refFrom = urlParams.get('ref');
-if (refFrom && !localStorage.getItem('invitedBy')) {
-  localStorage.setItem('invitedBy', refFrom);
-  localStorage.setItem('bonusGiven', 'yes');
-  virusCount += 100;
-  updateUI();
-}
-
-let totalEarned = parseInt(localStorage.getItem('totalEarned')) || 0;
-let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
-
+// === Telegram SDK ===
 const tg = window.Telegram.WebApp;
 tg.expand();
 
+// === Переменные ===
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
-const rankLevels = [
-  { name: 'Новичок', image: 'assets/rank1.png', threshold: 0 },
-  { name: 'Зараза', image: 'assets/rank2.png', threshold: 1000 },
-  { name: 'Эпидемия', image: 'assets/rank3.png', threshold: 5000 },
-  { name: 'Пандемия', image: 'assets/rank4.png', threshold: 10000 },
-  { name: 'Мутант', image: 'assets/rank5.png', threshold: 25000 },
-  { name: 'Угроза', image: 'assets/rank6.png', threshold: 50000 },
-  { name: 'Чума', image: 'assets/rank7.png', threshold: 100000 },
-  { name: 'Киберпаразит', image: 'assets/rank8.png', threshold: 200000 },
-  { name: 'Глобальный Вирус', image: 'assets/rank9.png', threshold: 400000 }
-];
-
-let currentRankIndex = 0;
-const savedRank = localStorage.getItem('savedRankIndex');
-if (savedRank !== null) {
-  currentRankIndex = parseInt(savedRank);
-}
+let totalEarned = parseInt(localStorage.getItem('totalEarned')) || 0;
+let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
 
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || {};
 let upgradeCosts = JSON.parse(localStorage.getItem('upgradeCosts')) || {};
 let unlockedAchievements = JSON.parse(localStorage.getItem('unlockedAchievements')) || {};
+const basePrices = { speed: 100, shield: 500, stealth: 1500, autoclick: 200 };
 
+let gameState = {
+  bonusPerSecond: 0,
+  bonusPerMinute: 0,
+  cards,
+};
+
+// === Загружаем сохранённые карточки ===
+const savedCards = loadCardsState();
+if (savedCards) {
+  savedCards.forEach((card, i) => {
+    if (card.bought) gameState.cards[i].bought = true;
+  });
+}
+applyCardBonuses(gameState);
+
+// === Элементы ===
 const counter = document.getElementById('virus-count');
 const infectButton = document.getElementById('infect-button');
 const boss = document.getElementById('boss-virus');
@@ -56,24 +43,11 @@ function updateUI() {
   localStorage.setItem('upgrades', JSON.stringify(upgrades));
   localStorage.setItem('upgradeCosts', JSON.stringify(upgradeCosts));
   localStorage.setItem('unlockedAchievements', JSON.stringify(unlockedAchievements));
+  saveCardsState(gameState.cards);
   updateLevelsUI();
   updateAchievementProgress();
   updateRankIfNeeded();
-
-  mutations.forEach(mutation => {
-    const id = mutation.dataset.id;
-    const cost = upgradeCosts[id] || basePrices[id];
-    const level = upgrades[id] || 0;
-    const costElement = mutation.querySelector('p');
-
-    if (level >= 50) {
-      costElement.textContent = 'MAX LEVEL';
-      mutation.classList.add('disabled');
-    } else {
-      costElement.textContent = `COST: ${cost}`;
-      mutation.classList.remove('disabled');
-    }
-  });
+  updateCardButtons();
 }
 
 function updateLevelsUI() {
@@ -83,130 +57,30 @@ function updateLevelsUI() {
   });
 }
 
-function playSound() {
-  const audio = new Audio('assets/click.mp3');
-  audio.play();
-}
-
-function spawnMiniViruses() {
-  const boss = document.getElementById('boss-virus');
-  const rect = boss.getBoundingClientRect();
-  const baseX = rect.left + rect.width / 2;
-  const baseY = rect.top + rect.height / 2;
-
-  const amount = Math.floor(Math.random() * 3 + 2);
-  for (let i = 0; i < amount; i++) {
-    const virus = document.createElement('div');
-    virus.classList.add('spawned-virus');
-
-    const variants = [
-      'assets/virus1.png',
-      'assets/virus2.png',
-      'assets/virus3.png',
-      'assets/virus4.png',
-      'assets/virus5.png'
-    ];
-    virus.style.backgroundImage = `url(${variants[Math.floor(Math.random() * variants.length)]})`;
-    virus.style.left = `${baseX}px`;
-    virus.style.top = `${baseY}px`;
-    virus.style.setProperty('--x', Math.random().toFixed(2));
-    virus.style.setProperty('--y', Math.random().toFixed(2));
-
-    document.body.appendChild(virus);
-    setTimeout(() => virus.remove(), 1200);
-  }
-}
-
-function updateRankIfNeeded() {
-  const saved = parseInt(localStorage.getItem('savedRankIndex')) || 0;
-
-  for (let i = saved + 1; i < rankLevels.length; i++) {
-    if (virusCount >= rankLevels[i].threshold) {
-      currentRankIndex = i;
-      localStorage.setItem('savedRankIndex', currentRankIndex);
-      updateRankDisplay();
-      showRankPopup();
-      return;
+function updateCardButtons() {
+  gameState.cards.forEach(card => {
+    const btn = document.getElementById(`buy-card-${card.id}`);
+    if (btn) {
+      btn.disabled = card.bought;
+      btn.textContent = card.bought ? 'Owned' : `Buy (${card.cost})`;
     }
-  }
-
-  currentRankIndex = saved;
-  updateRankDisplay();
+  });
 }
 
-function updateRankDisplay() {
-  const rank = rankLevels[currentRankIndex];
-  document.getElementById('rank-image').src = rank.image;
-  document.getElementById('rank-name').textContent = rank.name;
-}
-
-function showRankPopup() {
-  const rank = rankLevels[currentRankIndex];
-  document.getElementById('rank-popup-img').src = rank.image;
-  document.getElementById('rank-popup-name').textContent = 'Новый ранг: ' + rank.name;
-  const popup = document.getElementById('rank-popup');
-  popup.classList.remove('hidden');
-
-  const okBtn = document.getElementById('rank-popup-ok');
-  okBtn.onclick = () => {
-    popup.classList.add('hidden');
-  };
-}
-
-// === Клики ===
+// === Кликер ===
 function infect() {
   const bonus = upgrades.speed || 0;
-  virusCount += 1 + bonus;
-
+  const gain = 1 + bonus;
+  virusCount += gain;
   totalClicks++;
-  totalEarned += 1 + bonus;
-  localStorage.setItem('totalClicks', totalClicks);
-  localStorage.setItem('totalEarned', totalEarned);
-
+  totalEarned += gain;
   updateUI();
   playSound();
   spawnMiniViruses();
 }
 
-
 infectButton.addEventListener('click', infect);
 boss.addEventListener('click', infect);
-
-// === Прокачка ===
-let clickTimestamps = [];
-const basePrices = {
-  speed: 100,
-  shield: 500,
-  stealth: 1500,
-  autoclick: 200,
-};
-
-mutations.forEach(mutation => {
-  mutation.addEventListener('click', () => {
-    const now = Date.now();
-    clickTimestamps = clickTimestamps.filter(t => now - t < 3000);
-    clickTimestamps.push(now);
-
-    if (clickTimestamps.length > 5) {
-      showToast('🕒 Not spam! Wait 3 seconds.', 'error');
-      return;
-    }
-
-    const id = mutation.dataset.id;
-    const level = upgrades[id] || 0;
-    let cost = upgradeCosts[id] || basePrices[id];
-
-    if (level >= 50) return showToast('Max level reached!', 'error');
-    if (virusCount < cost) return showToast('Not enough viruses!', 'error');
-
-    virusCount -= cost;
-    upgrades[id] = level + 1;
-    upgradeCosts[id] = Math.floor(cost * 1.2);
-    triggerInfectionEffect();
-    updateUI();
-    showToast(`${mutation.querySelector('strong').childNodes[0].textContent.trim()} upgraded to x${level + 1}!`, 'success');
-  });
-});
 
 // === Автокликер ===
 setInterval(() => {
@@ -217,7 +91,36 @@ setInterval(() => {
   }
 }, 1000);
 
-// === Достижения ===
+// === Доход от карточек ===
+setInterval(() => {
+  virusCount += gameState.bonusPerSecond;
+  updateUI();
+}, 1000);
+
+setInterval(() => {
+  virusCount += gameState.bonusPerMinute;
+  updateUI();
+}, 60000);
+
+// === Покупка карточек ===
+window.buyCard = function(cardId) {
+  const card = gameState.cards.find(c => c.id === cardId);
+  if (!card || card.bought) return;
+
+  if (virusCount < card.cost) {
+    showToast('Not enough viruses!', 'error');
+    return;
+  }
+
+  virusCount -= card.cost;
+  card.bought = true;
+  applyCardBonuses(gameState);
+  saveCardsState(gameState.cards);
+  updateUI();
+  showToast(`${card.name} activated!`, 'success');
+};
+
+// === Ачивки ===
 function unlockAchievement(id, message) {
   const el = document.getElementById(id);
   if (el && !unlockedAchievements[id]) {
@@ -244,16 +147,105 @@ function restoreAchievements() {
   });
 }
 
-// === Эффект заражения ===
+// === Мутации ===
+let clickTimestamps = [];
+
+mutations.forEach(mutation => {
+  mutation.addEventListener('click', () => {
+    const now = Date.now();
+    clickTimestamps = clickTimestamps.filter(t => now - t < 3000);
+    clickTimestamps.push(now);
+    if (clickTimestamps.length > 5) return showToast('🕒 Not spam! Wait.', 'error');
+
+    const id = mutation.dataset.id;
+    const level = upgrades[id] || 0;
+    let cost = upgradeCosts[id] || basePrices[id];
+    if (level >= 50) return showToast('Max level!', 'error');
+    if (virusCount < cost) return showToast('Not enough viruses!', 'error');
+
+    virusCount -= cost;
+    upgrades[id] = level + 1;
+    upgradeCosts[id] = Math.floor(cost * 1.2);
+    triggerInfectionEffect();
+    updateUI();
+    showToast(`${mutation.querySelector('strong').childNodes[0].textContent.trim()} → x${level + 1}`, 'success');
+  });
+});
+
+// === Ранги ===
+const rankLevels = [
+  { name: 'Новичок', image: 'assets/rank1.png', threshold: 0 },
+  { name: 'Зараза', image: 'assets/rank2.png', threshold: 1000 },
+  { name: 'Эпидемия', image: 'assets/rank3.png', threshold: 5000 },
+  { name: 'Пандемия', image: 'assets/rank4.png', threshold: 10000 },
+  { name: 'Мутант', image: 'assets/rank5.png', threshold: 25000 },
+  { name: 'Угроза', image: 'assets/rank6.png', threshold: 50000 },
+  { name: 'Чума', image: 'assets/rank7.png', threshold: 100000 },
+  { name: 'Киберпаразит', image: 'assets/rank8.png', threshold: 200000 },
+  { name: 'Глобальный Вирус', image: 'assets/rank9.png', threshold: 400000 }
+];
+
+let currentRankIndex = parseInt(localStorage.getItem('savedRankIndex')) || 0;
+
+function updateRankIfNeeded() {
+  for (let i = currentRankIndex + 1; i < rankLevels.length; i++) {
+    if (virusCount >= rankLevels[i].threshold) {
+      currentRankIndex = i;
+      localStorage.setItem('savedRankIndex', currentRankIndex);
+      updateRankDisplay();
+      showRankPopup();
+      return;
+    }
+  }
+  updateRankDisplay();
+}
+
+function updateRankDisplay() {
+  const rank = rankLevels[currentRankIndex];
+  document.getElementById('rank-image').src = rank.image;
+  document.getElementById('rank-name').textContent = rank.name;
+}
+
+function showRankPopup() {
+  const rank = rankLevels[currentRankIndex];
+  document.getElementById('rank-popup-img').src = rank.image;
+  document.getElementById('rank-popup-name').textContent = 'Новый ранг: ' + rank.name;
+  document.getElementById('rank-popup').classList.remove('hidden');
+  document.getElementById('rank-popup-ok').onclick = () => {
+    document.getElementById('rank-popup').classList.add('hidden');
+  };
+}
+
+// === Эффекты и звук ===
+function playSound() {
+  new Audio('assets/click.mp3').play();
+}
+
+function spawnMiniViruses() {
+  const rect = boss.getBoundingClientRect();
+  const baseX = rect.left + rect.width / 2;
+  const baseY = rect.top + rect.height / 2;
+  const amount = Math.floor(Math.random() * 3 + 2);
+  for (let i = 0; i < amount; i++) {
+    const virus = document.createElement('div');
+    virus.classList.add('spawned-virus');
+    const variants = ['virus1.png', 'virus2.png', 'virus3.png', 'virus4.png', 'virus5.png'];
+    virus.style.backgroundImage = `url(assets/${variants[Math.floor(Math.random() * variants.length)]})`;
+    virus.style.left = `${baseX}px`;
+    virus.style.top = `${baseY}px`;
+    virus.style.setProperty('--x', Math.random().toFixed(2));
+    virus.style.setProperty('--y', Math.random().toFixed(2));
+    document.body.appendChild(virus);
+    setTimeout(() => virus.remove(), 1200);
+  }
+}
+
 function triggerInfectionEffect() {
   const layer = document.getElementById('infection-layer');
   layer.className = 'infection-effect';
-  setTimeout(() => {
-    layer.className = '';
-  }, 2000);
+  setTimeout(() => layer.className = '', 2000);
 }
 
-// === Toast ===
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
