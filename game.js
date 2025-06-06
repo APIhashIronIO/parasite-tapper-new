@@ -1,11 +1,9 @@
 import cards, { applyCardBonuses } from './cardsSystem.js';
 import { saveCardsState, loadCardsState } from './storageManager.js';
 
-// === Telegram SDK ===
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-// === Переменные ===
 let virusCount = parseInt(localStorage.getItem('virusCount')) || 0;
 let totalEarned = parseInt(localStorage.getItem('totalEarned')) || 0;
 let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
@@ -21,7 +19,6 @@ let gameState = {
   cards,
 };
 
-// === Загружаем сохранённые карточки ===
 const savedCards = loadCardsState();
 if (savedCards) {
   savedCards.forEach((card, i) => {
@@ -32,6 +29,7 @@ applyCardBonuses(gameState);
 
 // === Элементы ===
 const counter = document.getElementById('virus-count');
+const incomeDisplay = document.getElementById('income-per-hour');
 const infectButton = document.getElementById('infect-button');
 const boss = document.getElementById('boss-virus');
 const mutations = document.querySelectorAll('.mutation');
@@ -48,6 +46,23 @@ function updateUI() {
   updateAchievementProgress();
   updateRankIfNeeded();
   updateCardButtons();
+  updateIncomePerHour(); // 💰 новый блок
+}
+
+function formatCompact(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  return n.toString();
+}
+
+function updateIncomePerHour() {
+  const perSec = gameState.bonusPerSecond || 0;
+  const perMin = gameState.bonusPerMinute || 0;
+  const totalPerHour = perSec * 3600 + perMin * 60;
+  if (incomeDisplay) {
+    incomeDisplay.textContent = `+${formatCompact(totalPerHour)} / hour`;
+  }
 }
 
 function updateLevelsUI() {
@@ -55,8 +70,6 @@ function updateLevelsUI() {
     const id = el.dataset.id;
     const level = upgrades[id] || 0;
     el.textContent = `x${level}`;
-
-    // Обновляем цену
     const cost = upgradeCosts[id] || basePrices[id];
     const parent = el.closest('.mutation');
     if (parent) {
@@ -68,7 +81,6 @@ function updateLevelsUI() {
   });
 }
 
-
 function updateCardButtons() {
   gameState.cards.forEach(card => {
     const btn = document.getElementById(`buy-card-${card.id}`);
@@ -79,7 +91,6 @@ function updateCardButtons() {
   });
 }
 
-// === Кликер ===
 function infect() {
   const bonus = upgrades.speed || 0;
   const gain = 1 + bonus;
@@ -94,7 +105,6 @@ function infect() {
 infectButton.addEventListener('click', infect);
 boss.addEventListener('click', infect);
 
-// === Автокликер ===
 setInterval(() => {
   const auto = upgrades.autoclick || 0;
   if (auto > 0) {
@@ -103,7 +113,6 @@ setInterval(() => {
   }
 }, 1000);
 
-// === Доход от карточек ===
 setInterval(() => {
   virusCount += gameState.bonusPerSecond;
   updateUI();
@@ -114,7 +123,6 @@ setInterval(() => {
   updateUI();
 }, 60000);
 
-// === Покупка карточек ===
 window.buyCard = function(cardId) {
   const card = gameState.cards.find(c => c.id === cardId);
   if (!card || card.bought) return;
@@ -132,7 +140,6 @@ window.buyCard = function(cardId) {
   showToast(`${card.name} activated!`, 'success');
 };
 
-// === Ачивки ===
 function unlockAchievement(id, message) {
   const el = document.getElementById(id);
   if (el && !unlockedAchievements[id]) {
@@ -159,7 +166,6 @@ function restoreAchievements() {
   });
 }
 
-// === Мутации ===
 let clickTimestamps = [];
 
 mutations.forEach(mutation => {
@@ -184,7 +190,6 @@ mutations.forEach(mutation => {
   });
 });
 
-// === Ранги ===
 const rankLevels = [
   { name: 'Новичок', image: 'assets/rank1.png', threshold: 0 },
   { name: 'Зараза', image: 'assets/rank2.png', threshold: 1000 },
@@ -228,7 +233,6 @@ function showRankPopup() {
   };
 }
 
-// === Эффекты и звук ===
 function playSound() {
   new Audio('assets/click.mp3').play();
 }
@@ -270,7 +274,6 @@ function showToast(message, type = 'info') {
   }, 2500);
 }
 
-// === INIT ===
 window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     document.querySelector('.tap-virus')?.classList.add('mutating');
